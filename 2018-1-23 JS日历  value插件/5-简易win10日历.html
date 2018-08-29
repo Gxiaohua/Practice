@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>win10日历</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
+    .calendar {
+      width: 460px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.5);
+      padding-bottom: 20px;
+    }
+    .date-month {
+      width: 100%;
+      height: 66px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 0 32px;
+    }
+    .cur-month {
+      height: 100%;
+      color: #ccc;
+      font: 16px/66px Arial;
+    }
+    .set-month a, .cur-month {
+      cursor: default;
+      /* -webkit-user-select: none; */
+    }
+    .set-month a:hover, .cur-month:hover {
+      color: #fff;
+    }
+    .set-month {
+      width: 88px;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .set-month a {
+      color: #ccc;
+      font-size: 24px;
+    }
+    .prev {
+      transform: rotate(90deg);
+    }
+    .next {
+      transform: rotate(-90deg);
+    }
+    .date-days, .date-nums{
+      width: 100%;
+      height: 55px;
+      display: flex;
+      justify-content: left;
+      align-items: left;
+    }
+    .date-nums {
+      height: auto;
+      flex-wrap: wrap;
+    }
+    .date-days span, .date-nums span{
+      width: 60px;
+      height: 55px;
+      border: 2px solid rgba(0,0,0,0);
+      text-align: center;
+      color: #fff;
+      line-height: 55px;
+      cursor: default;
+    }
+    .date-days span:hover, .date-nums span:hover {
+      border-color: #ccc;
+    }
+    .current-day {
+      background: rgb(141, 214, 237);
+    }
+    .date-nums span.other-month-date {
+      color: #ccc;
+    }
+    .date-nums span.gray {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <select id="selectOptions">
+    <!-- <option>1991</option>
+    <option>1992</option>
+    <option>1993</option>
+    <option>1994</option>
+    <option>1990</option>
+    <option>1990</option> -->
+  </select>
+  <select id="selectMonth">
+    <!-- <option>1991</option>
+    <option>1992</option>
+    <option>1993</option>
+    <option>1994</option>
+    <option>1990</option>
+    <option>1990</option> -->
+  </select>
+  <div class="calendar">
+    <div class="date-month">
+      <a href="javascript:;" class="prevYear"><<</a>
+        <a href="javascript:;" class="nextYear">>></a>
+      <div class="cur-month">xxxx年x月</div>
+      <div class="set-month">
+        <a href="javascript:;" class="prev"><</a>
+        <a href="javascript:;" class="next"><</a>
+      </div>
+    </div>
+    <div class="date-dates">
+      <div class="date-days">
+        <span>日</span>
+        <span>一</span>
+        <span>二</span>
+        <span>三</span>
+        <span>四</span>
+        <span>五</span>
+        <span>六</span>
+        
+      </div>
+      <div class="date-nums">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+        <span>7</span>
+      </div>
+    </div>
+  </div>
+  <script>
+
+    // 先生成选择的年
+    var start = 2000;
+    var end = 2018;
+    var selectHtml = '';
+    for( var i = start; i <= end; i++ ){
+      selectHtml += '<option value="'+i+'">'+i+'</option>'
+    }
+
+    selectOptions.innerHTML = selectHtml;
+
+    // 生成月
+    var selectMonthHtml = '';
+    for( var i = 1; i <= 12; i++ ){
+      selectMonthHtml += '<option value="'+i+'">'+i+'</option>'
+    }
+
+    selectMonth.innerHTML = selectMonthHtml;
+
+    // 当select的value值发生变，会触发事件 onchange事件
+    selectOptions.onchange = function (){
+      console.log(this.value); 
+      current.year = this.value;
+      init(current)
+      console.log(current);
+    }
+
+    selectMonth.onchange = function (){
+      current.month = this.value;
+      init(current) 
+    }
+
+
+    var dateNums = document.querySelector('.date-nums');
+    var curMonth = document.querySelector('.cur-month')
+
+    var next = document.querySelector('.next'); // 下一个月
+    var prev = document.querySelector('.prev'); // 上一个月
+
+    var nextYear = document.querySelector('.nextYear'); // 下一年
+    var prevYear = document.querySelector('.prevYear'); // 上一年
+
+    var current = {}; // 用来存年月日的，根据current里面存的年月日，来生成结构
+    /*
+      year:  2018
+      month: 1
+      date: 30
+    */
+
+    var now = new Date();
+
+    current.year = now.getFullYear();
+    current.month = now.getMonth()+1;
+    current.date = now.getDate();
+
+    console.log(current);
+
+    // I切换上一个月和下一个月
+    next.onclick = function (){
+        current.month++;
+        init(current)
+        console.log(current);
+    }
+
+    prev.onclick = function (){
+        current.month--;
+        init(current)
+    }
+
+    nextYear.onclick = function (){
+        current.year++;
+        init(current)
+    }
+
+     prevYear.onclick = function (){
+        current.year--;
+        init(current)
+    }
+
+    /*
+      1. 一个月有多少天  生成span
+      2. 一个月的1号周几 开始生成占位的span
+      3. 总的格子数 6X7 = 42;
+    */
+
+    init(current);
+
+    // 用来初始 指定年月日的结构的  没有指定，默认已当前时间为准
+    /*
+      setTime
+        year
+        month
+        date
+    */
+    function init(setTime){
+        var d = new Date();
+        // 设置
+        d.setFullYear(setTime.year)
+        d.setMonth(setTime.month-1)
+        d.setDate(setTime.date);
+        // 年
+        var year = d.getFullYear();
+        // 月
+        var month = d.getMonth()+1;
+        // 日
+        var date = d.getDate();
+
+        // 更新一下current对象
+        current.year = year;
+        current.month = month;
+        current.date = date;
+
+        // 这个月的总天数
+        var totalDate = getMonthDate(year,month);
+        // 这个月的1号周几
+        var week = getOneWeek(year,month);
+
+        
+
+        curMonth.innerHTML = year + '年' + month + '月'
+
+        // 上一个月的总天数
+        var prevDate = getMonthDate(year,month-1);
+
+        // 剩下多少个格子
+        var endNums = 42 - totalDate - week;
+
+        // 根据总天数生成span
+        dateNums.innerHTML = createStartSpans(week) + createSpans(totalDate,date) + createEndSpans(endNums);
+
+        // 找到class为start的span
+        var startSpans = dateNums.querySelectorAll('.start');
+
+        /*for( var i = startSpans.length-1; i >= 0; i-- ){
+          startSpans[i].innerHTML = prevDate-- ;
+        }*/
+        for( var i = 0; i < startSpans.length; i++ ){
+          // 0   1   2  3
+          // 28 29 30 31    31-4 + 1 + i(0 1 2 3)
+          startSpans[i].innerHTML =  (prevDate - startSpans.length+1)+i;
+        }
+    }
+
+    
+
+
+
+
+    // 开始位置占位  根据1号周几 就占几个位置  生成多少个span
+    
+    function createStartSpans(num){
+       var startHtml = '';
+       for( var i = 0; i < num; i++ ){
+           startHtml += '<span class="start other-month-date"></span>'
+       }
+       return  startHtml;
+    }
+
+    // 生成剩下多少个span
+    function createEndSpans(nums){
+       var endHtml = '';
+       for( var i = 1; i <= nums; i++ ){
+           endHtml += '<span class="other-month-date">'+i+'</span>'
+       }
+       return  endHtml; 
+    }
+
+
+    // 根据天数生成中间结构
+    // 参数：1 总天数 2. 当前日期
+    function createSpans(totalDate,currentDate){
+       var html = '';
+       for( var i = 1; i <= totalDate; i++ ){
+          if(i === currentDate){
+            html += '<span class="current-day">'+i+'</span>'
+          }else{
+            html += '<span>'+i+'</span>'
+          }
+       } 
+
+       return html;
+    }
+
+    // 1号周几
+    function getOneWeek(y,m){
+      var d = new Date();
+      d.setFullYear(y)
+      d.setMonth(m-1)
+      d.setDate(1);
+
+      return d.getDay();
+    }
+    // 一个月多少天
+    function getMonthDate(y,m){
+      var d = new Date();
+      d.setFullYear(y)
+      d.setMonth(m)  // 设置到下一个月
+      d.setDate(0)  // 把日期设置为0，上一个月的最后一天
+      return d.getDate();
+    }
+
+
+  </script>
+</body>
+</html>

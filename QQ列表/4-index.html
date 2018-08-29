@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			body,
+			ul,
+			li,
+			h2 {
+				margin: 0;
+				padding: 0;
+			}
+			
+			li {
+				list-style: none;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="qq.css" />
+	</head>
+
+	<body onselectstart="return false;">
+		<div class="wrap">
+			<div class="list">
+				<h2><span></span>我的好友</h2>
+				<ul>
+					
+					<li>小佳Love</li>
+					<li>从来就是这么正经</li>
+					<li>leo是个胖子</li>
+					<li>momo不是陌陌</li>
+				</ul>
+				<h2><span></span>企业好友</h2>
+				<ul>
+					<li>习近平</li>
+					<li>普京</li>
+					<li>奥巴马</li>
+				</ul>
+				<h2><span></span>黑名单</h2>
+				<ul>
+					<li>安倍</li>
+					<li>杜特尔特</li>
+				</ul>
+			</div>
+		</div>
+		<script>
+			/*
+				分析：
+					1. 点击每一按钮，让对应的面板显示
+					2. 点击的是同一个按钮，就让对应面板显示或隐藏
+						关闭的显示，显示的隐藏
+					3. 点击的不是同一按钮，让点击的这个按钮展示，其他的全部隐藏
+
+					4. 鼠标移入每一个面板的每一个li，添加背景颜色为green，移开背景颜色消失
+
+					5. 点击一下li，li的背景颜色变为pink
+					6. 鼠标移入移出点击的li上，背景颜色依然为pink
+
+
+				运算符
+					== 两边相同，返回true
+					!= 判断两边不相同，返回true
+			*/
+
+			var h2s = document.querySelectorAll('.list h2')
+			var uls = document.querySelectorAll('.list ul')
+			//找到每一个li
+			var lis = document.querySelectorAll('li')
+
+			var len = h2s.length;
+
+            for(var i = 0; i < len; i++){
+				h2s[i].index = i
+				h2s[i].state = true   //设置一个状态值，true代表没有点击
+				h2s[i].onclick = function(){
+					if(this.state){   //没有点击样式为空
+						for(var i = 0; i < len; i++){
+							h2s[i].style.background = ''
+							uls[i].style.display = 'none'
+							h2s[i].state = true
+						}
+						//状态为false代表点击啦
+						this.state = false
+						this.style.background = 'red'
+				    	uls[this.index].style.display = 'block'
+					}else{
+						//点击状态为false时代表点击
+						this.state = true
+						this.style.background = ''
+				    	uls[this.index].style.display = 'none'
+					}								
+				}
+			}
+			//找到所有li
+			for(var i = 0; i < lis.length; i++){
+				lis[i].state = true  //true代表未点击
+				lis[i].onmouseover = function(){	
+					if(this.state){	
+						this.style.background = 'pink'
+					}
+				}
+				lis[i].onmouseout = function(){	
+					if(this.state){	
+						this.style.background = ''
+					}
+				}
+				lis[i].onclick = function(){
+					if(this.state){
+						for(var j = 0; j < lis.length; j++){
+							lis[j].style.background = ''
+							lis[j].state = true
+						}
+						this.style.background = 'gray'
+						this.state = false
+					}else{
+						this.style.background = ''
+						this.state = true
+					}		
+				}
+			}
+
+		</script>
+	</body>
+
+</html>

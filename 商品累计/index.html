@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			body,
+			ul,
+			li {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="price.css" />
+	</head>
+
+	<body onselectstart="return false;">
+		<div class="wrap">
+			<div class="box">
+				<ul class="list">
+					<li>
+						<i></i>
+						<em>0</em>
+						<i></i>
+						<span>
+							单价：<strong class="price">12.5元 </strong> 小计：<strong class="Pricenum">0元</strong>
+						</span>
+					</li>
+					<li>
+						<i></i>
+						<em>0</em>
+						<i></i>
+						<span>
+							单价：<strong  class="price">10.5元 </strong> 小计：<strong class="Pricenum">0元</strong>
+						</span>
+					</li>
+					<li>
+						<i></i>
+						<em>0</em>
+						<i></i>
+						<span>
+							单价：<strong  class="price">8.5元 </strong> 小计：<strong class="Pricenum">0元</strong>
+						</span>
+					</li>
+					<li>
+						<i></i>
+						<em>0</em>
+						<i></i>
+						<span>
+							单价：<strong  class="price">8元 </strong> 小计：<strong class="Pricenum">0元</strong>
+						</span>
+					</li>
+					<li>
+						<i></i>
+						<em>0</em>
+						<i></i>
+						<span>
+							单价：<strong  class="price">14.5元 </strong> 小计：<strong class="Pricenum">0元</strong>
+						</span>
+					</li>
+				</ul>
+				<div class="info">
+					<span>商品公合计：<em class="total">0</em>件</span>
+					<span>共花费了：<em class="totalPrice">0</em>元</span>
+					<br />
+					<br />
+					<span>其中最贵的商品单价是：<em class="zuigui">0</em>元</span>
+				</div>
+			</div>
+		</div>
+		<script>
+			/*
+				要求： 
+				    1.当点击加时，数量由0依次增加，加几次小计就等于单价乘以数量
+					   共多少件加数量，共花费了多少
+					2.当点击减时，依次递减
+					/*	
+			   找最大值
+			   定义一个数用来和每一个值相比较，如果大于这个数就互换位置
+			   1.首先先判断有没有值
+			   2.在有值的时候比较值
+			
+			*/
+			let lis = document.querySelectorAll('.list li')
+			//共多少件商品
+			let total = document.querySelector('.total')
+			console.log(total)
+			//共花费多少钱
+			let totalPrice = document.querySelector('.totalPrice')
+			//其中最贵的商品
+			let zuigui = document.querySelector('.zuigui')
+			//找到所有的单价
+			var ems = document.querySelectorAll('.list em')
+			//找到所有的单价
+			var priceElement = document.querySelectorAll('.Pricenum')
+			//总件数
+			let totalnum = 0
+			//总价钱
+			let totalprice = 0
+			// let max = -Infinity
+			for(var i = 0; i < lis.length; i++){
+				tab(lis[i])
+			}
+			function Num(){
+				let max = -Infinity
+				for(var i = 0; i < ems.length; i++){
+					if(ems[i].innerHTML > 0){
+						if(parseFloat(priceElement[i].innerHTML) > max){
+							max = parseFloat(priceElement[i].innerHTML)
+							console.log(max)
+						}
+					}
+				}
+				return max ===  -Infinity ? 0 : max;	
+			}
+			//封装函数，一个一个增加
+			function tab(parent){
+				//找到每一个li中加号和减号
+				let add = parent.querySelectorAll('i')
+				//每一个件数
+				let num = parent.querySelector('em')
+				//单价
+				let price = parent.querySelector('.price')
+				//小计每件总价
+				let pricenum = parent.querySelector('.Pricenum')
+				//加
+				add[1].onclick = function(){
+					var n = parseFloat(num.innerHTML)+1
+					num.innerHTML = n
+					pricenum.innerHTML = parseFloat(price.innerHTML) * n
+					totalnum++
+					totalprice += parseFloat(price.innerHTML)
+					total.innerHTML = totalnum
+					totalPrice.innerHTML = totalprice
+					if(n == 1){
+						zuigui.innerHTML = Num()
+					}
+				}
+				//减
+				add[0].onclick = function(){
+					var n = parseFloat(num.innerHTML)
+					if(n == 0 ){
+						return
+					}
+					num.innerHTML = n-1
+					pricenum.innerHTML = parseFloat(price.innerHTML) * (n-1)
+					totalnum--
+					totalprice -= parseFloat(price.innerHTML)
+					total.innerHTML = totalnum
+					totalPrice.innerHTML = totalprice
+					if(n-1 == 0){
+						zuigui.innerHTML = Num()
+					}
+				}
+			}
+		</script>
+	</body>
+
+</html>
